@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card-editor">
+  <div class="titlebar">
+    <div><p class="eyebrow">Смарткарти</p><h1>{{'Редактиране на карта' if row_id else 'Нова смарткарта'}}{% if row_id %} <span class="card-number">#{{row.serial_no|card_serial}}</span>{% endif %}</h1></div>
+    <a class="quiet button" href="{{url_for('listing',kind='cards')}}">← Всички карти</a>
+  </div>
+  <section class="panel card-form-panel">
+    <form method="post" data-card-form>
+      <input type="hidden" name="csrf_token" value="{{csrf_token}}">
+      {% if not row_id %}
+      <div class="new-card-fields">
+        <label>Първи сериен номер<input type="number" name="serial_no" value="{{row.serial_no}}" min="0" max="4294967295" required><small>Например 2100000002 → 210-000-000-2</small></label>
+        <label>Брой карти<input type="number" name="quantity" value="{{10 if request.args.get('multiple')=='1' else 1}}" min="1" max="5000" required><small>Последователни номера и отделен ключ за всяка карта</small></label>
+      </div>
+      {% endif %}
+      <label class="card-row"><span class="field-prefix">Име <small>NAME</small></span><input name="name" value="{{row.name or ''}}" maxlength="255" autocomplete="off"></label>
+      <label class="card-row"><span class="field-prefix">Информация <small>INFO</small></span><input name="info" value="{{row.info or ''}}" autocomplete="off"></label>
+      <fieldset class="access-editor"><legend>Права за достъп</legend>
+        <div class="access-scroll"><div class="access-bits" aria-label="32 бита за права на достъп">
+          {% for bit in range(31,-1,-1) %}<label><span>{{bit}}</span><input type="checkbox" disabled data-access-bit="{{bit}}" aria-label="Бит {{bit}}" {% if mask_bits[bit] %}checked{% endif %}></label>{% endfor %}
+        </div></div>
+        <label class="card-row"><span class="field-prefix">Маска · HEX <small>ACCESS_CRITERIA</small></span><input name="access_criteria" class="mono" value="{{row.access_criteria or '00000000'}}" pattern="[0-9a-fA-F]{8}" minlength="8" maxlength="8" required autocomplete="off" spellcheck="false" data-access-mask></label>
+        <noscript><p class="field-help">Въведи правата в HEX полето; отметките изискват JavaScript.</p></noscript><p class="field-help" data-access-help>Отметките и HEX маската се променят заедно. Бит 31 е най-вляво.</p>
+      </fieldset>
+      <div class="date-row">
+        <label class="card-row"><span class="field-prefix">Начало <small>START · UTC</small></span><input type="datetime-local" name="start" value="{{row.start|utc_date(true)}}" step="1" required></label>
+        <button type="button" class="date-action" data-date-now>Сега</button>
+      </div>
+      <div class="date-row">
+        <label class="card-row"><span class="field-prefix">Край <small>FINISH · UTC</small></span><input type="datetime-local" name="finish" value="{{row.finish|utc_date(true)}}" step="1" required></label>
+        <button type="button" class="date-action" data-date-month>+1 месец</button>
+      </div>
+      <p class="field-help">Дата и час в UTC. „+1 месец“ удължава избраната крайна дата с един календарен месец.</p>
+      <details class="advanced-card" data-card-advanced-details>
+        <summary>Допълнителни настройки</summary>
+        <fieldset class="fields" data-card-advanced {% if row_id %}disabled{% endif %}>
+          {% if actor=='admin' %}
+          {% if row_id %}<label>Сериен номер<input type="number" name="serial_no" value="{{row.serial_no}}" min="0" max="4294967295" required></label>{% endif %}
+          <label>Мрежа · network_id<input type="number" name="network_id" value="{{row.network_id}}" min="0" max="4294967295" required></label>
+          <label>Тип карта<select name="type"><option value="1" {% if row.type==1 %}selected{% endif %}>Тип 1</option><option value="2" {% if row.type==2 %}selected{% endif %}>Тип 2</option></select></label>
+          {% endif %}
+          <label>Свързване с приемник · Pair<select name="pair"><option value="0" {% if row.pair==0 %}selected{% endif %}>Не</option><option value="1" {% if row.pair==1 %}selected{% endif %}>Да</option></select></label>
+          {% if actor=='admin' %}
+          <label>Състояние · status<input type="number" name="status" value="{{row.status}}" min="0" max="255" required></label>
+          <label>UID<input type="number" name="uid" value="{{row.uid}}" min="-2147483648" max="2147483647" required></label>
+          <label>Ключ на картата<input type="password" name="key" autocomplete="new-password" placeholder="Празно = {{'запазване на текущия ключ' if row_id else 'автоматичен ключ'}}" pattern="[0-9a-fA-F]{32}" maxlength="32"><small>32 HEX знака. Текущият ключ не се показва.</small></label>
+          {% endif %}
+        </fieldset>
+      </details>
+      <div class="actions card-save"><a href="{{url_for('listing',kind='cards')}}">Отказ</a><button>{{'Запази картата' if row_id else 'Създай карта / карти'}}</button></div>
+    </form>
+  </section>
+  {% if actor=='admin' and row_id %}<details class="panel danger card-delete" id="delete"><summary>Изтриване на картата</summary><form method="post" action="{{url_for('delete',kind='cards',row_id=row_id)}}"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><label class="checkbox-label"><input type="checkbox" required> Потвърждавам изтриването на карта #{{row.serial_no|card_serial}}.</label><button class="destructive">Изтрий картата</button></form></details>{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{url_for('static',filename='cards.js')}}" defer></script>{% endblock %}

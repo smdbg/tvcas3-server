@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="titlebar"><div><p class="eyebrow">TVCAS / ECMG {{row.id}}</p><h1>ECM журнал</h1><p class="muted">{{row.info}}</p></div><a href="{{url_for('listing',kind='ecmg')}}">← ECM генератори</a></div>
+<section class="panel" data-ecmg-log data-api-url="{{url_for('ecmg_diagnostics',row_id=row.id)}}" data-login-url="{{url_for('login')}}" data-peer-id="{{peer_id}}" data-limit="{{limit}}">
+  <div class="log-toolbar"><label>Пиър<select data-peer-filter><option value="">Всички пиъри</option>{% if peer_id %}<option value="{{peer_id}}" selected>{{peer_id}}</option>{% endif %}</select></label><button class="quiet" type="button" data-pause aria-pressed="false">Пауза</button><span class="badge" data-generator-state>Зареждане…</span></div>
+  <p class="muted live-caption">Обновяване през 3 секунди, докато страницата е видима. <span data-timezone></span></p>
+  <p class="live-error" data-live-error role="status" hidden></p>
+  <h2>Пиъри</h2><div data-log-peers class="log-peers"><p class="muted">Зареждане…</p></div>
+  <div class="log-heading"><h2>ECM / CW</h2><span class="muted" data-log-count></span></div>
+  <p class="muted live-caption">Последните <span data-retention>1000</span> заявки на генератор се пазят в RAM. Журналът започва от стартирането на генератора. Както в стария TVCAS: CW1 = odd, CW2 = even.</p>
+  <div class="ecm-log" data-log-entries><p class="muted">Зареждане…</p></div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{url_for('static',filename='ecmg-live.js')}}" defer></script>{% endblock %}

@@ -1,0 +1,26 @@
+[Unit]
+Description=TVCAS Python administration and SimulCrypt generators
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=tvcas
+Group=tvcas
+WorkingDirectory=/opt/tvcas
+StateDirectory=tvcas
+StateDirectoryMode=0700
+UMask=0077
+# --activate grants permission; the saved runtime gate and generator flags also apply.
+ExecStart=/opt/tvcas/.venv/bin/tvcas serve --database /var/lib/tvcas/tvcas.sqlite --host 127.0.0.1 --port 8091 --activate
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/tvcas
+
+[Install]
+WantedBy=multi-user.target

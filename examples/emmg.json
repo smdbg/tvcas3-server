@@ -1,0 +1,18 @@
+{
+  "info": "Example EMMG — local MUX",
+  "host": "127.0.0.1",
+  "port": 41000,
+  "client_id": 184549377,
+  "network_id": 1,
+  "protocol_version": 2,
+  "packet_mode": 0,
+  "bandwidth": 64,
+  "repetition": 60,
+  "period": 30,
+  "period_messages": 1,
+  "channel_test_delay": 60,
+  "stream_test_delay": 60,
+  "timeout": 60,
+  "reload_sec": 300,
+  "uid": 15
+}

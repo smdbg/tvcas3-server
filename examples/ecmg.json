@@ -1,0 +1,20 @@
+{
+  "info": "Example ECMG — local scrambler",
+  "host": 2130706433,
+  "port": 42000,
+  "network_id": 1,
+  "timeout": 60,
+  "packet_mode": 0,
+  "ac_delay_start": 0,
+  "ac_delay_stop": 0,
+  "delay_start": 5000,
+  "delay_stop": 5000,
+  "transition_delay_start": 5000,
+  "transition_delay_stop": 5000,
+  "repetition_period": 200,
+  "min_cp_duration": 100,
+  "max_compute_time": 8000,
+  "ecm_time1": 60,
+  "ecm_time2": 60,
+  "ecm_block_time": 0
+}

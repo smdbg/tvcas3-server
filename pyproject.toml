@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tvcas-python"
+version = "0.1.0"
+description = "Python migration of the TVCAS3 administration, ECMG and EMMG services"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "GPL-3.0-or-later"
+license-files = ["COPYING"]
+dependencies = [
+  "Flask>=2.0,<4",
+  "cryptography>=3.4.8,<51",
+  "waitress>=2.0,<4",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7,<10"]
+
+[project.urls]
+Repository = "https://github.com/smdbg/tvcas3-server"
+Issues = "https://github.com/smdbg/tvcas3-server/issues"
+Documentation = "https://github.com/smdbg/tvcas3-server#readme"
+
+[project.scripts]
+tvcas = "tvcas.__main__:main"
+tvcas-migrate = "tvcas.migration:main"
+
+[tool.setuptools.packages.find]
+include = ["tvcas*"]
+
+[tool.setuptools.package-data]
+tvcas = ["templates/*.html", "static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

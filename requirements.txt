@@ -1,0 +1,4 @@
+# Runtime dependencies; pip install . uses the same ranges in pyproject.toml.
+Flask>=2.0,<4
+cryptography>=3.4.8,<51
+waitress>=2.0,<4
